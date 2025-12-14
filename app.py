@@ -13,37 +13,43 @@ HTML = """
 
 <style>
 :root{
-  --bg1:#0a1a2f;
-  --bg2:#0b2b4f;
-  --card:rgba(255,255,255,0.12);
+  --bg1:#0f0c29;
+  --bg2:#302b63;
+  --bg3:#ff4ecd;
+  --card:rgba(255,255,255,0.14);
   --text:#ffffff;
   --btn1:#00c6ff;
-  --btn2:#0072ff;
+  --btn2:#ff4ecd;
   --box:rgba(0,0,0,.45);
-  --glow:#00c6ff;
+  --glow:#ff4ecd;
 }
 body.light{
-  --bg1:#e6f2ff;
-  --bg2:#cce6ff;
-  --card:rgba(255,255,255,0.9);
+  --bg1:#e6f0ff;
+  --bg2:#ffd6f0;
+  --bg3:#cce0ff;
+  --card:rgba(255,255,255,0.95);
   --text:#000;
   --btn1:#1e90ff;
-  --btn2:#0066cc;
-  --box:#eef6ff;
-  --glow:#1e90ff;
+  --btn2:#ff4ecd;
+  --box:#eef3ff;
+  --glow:#ff4ecd;
 }
+
 *{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
 html{scroll-behavior:smooth}
 
 body{
-  margin:0;min-height:100vh;
-  display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(-45deg,var(--bg1),var(--bg2));
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(-45deg,var(--bg1),var(--bg2),var(--bg3));
   background-size:400% 400%;
-  animation:gradient 10s ease infinite;
+  animation:bgMove 12s ease infinite;
   color:var(--text);
 }
-@keyframes gradient{
+@keyframes bgMove{
   0%{background-position:0% 50%}
   50%{background-position:100% 50%}
   100%{background-position:0% 50%}
@@ -51,60 +57,76 @@ body{
 
 .card{
   width:98%;
-  max-width:620px;
-  padding:24px;
-  border-radius:18px;
+  max-width:640px;
+  padding:26px;
+  border-radius:20px;
   background:var(--card);
-  backdrop-filter:blur(18px);
-  box-shadow:0 0 40px rgba(0,0,0,.5);
+  backdrop-filter:blur(20px);
+  box-shadow:0 0 60px rgba(255,78,205,.35);
 }
 
 .topbar{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
 }
-h1{margin:0;font-size:22px}
+h1{margin:0;font-size:23px}
 
 .toggle{
-  cursor:pointer;font-size:14px;
-  padding:6px 12px;border-radius:20px;
-  background:var(--box);
+  cursor:pointer;
+  font-size:14px;
+  padding:7px 14px;
+  border-radius:22px;
+  background:linear-gradient(135deg,var(--btn1),var(--btn2));
+  color:#000;
 }
 
-.tabs{display:flex;margin:12px 0}
+.tabs{display:flex;margin:14px 0}
 .tab{
-  flex:1;padding:12px;cursor:pointer;
-  border:1px solid rgba(255,255,255,.3);
-  background:transparent;color:var(--text);
+  flex:1;
+  padding:13px;
+  cursor:pointer;
+  border-radius:14px;
+  background:rgba(255,255,255,.12);
+  color:var(--text);
   text-align:center;
 }
-.tab.active{background:rgba(255,255,255,.25)}
+.tab.active{
+  background:linear-gradient(135deg,var(--btn1),var(--btn2));
+  color:#000;
+  font-weight:bold;
+}
 
 .section{display:none}
 .section.active{display:block}
 
 input{
-  width:100%;padding:12px;
-  border-radius:10px;border:none;
+  width:100%;
+  padding:13px;
+  border-radius:12px;
+  border:none;
   margin-bottom:8px;
 }
 
 button{
-  width:100%;padding:12px;
-  border:none;border-radius:10px;
+  width:100%;
+  padding:13px;
+  border:none;
+  border-radius:14px;
   background:linear-gradient(135deg,var(--btn1),var(--btn2));
-  font-weight:bold;cursor:pointer;
+  font-weight:bold;
+  cursor:pointer;
   margin-bottom:6px;
   color:#000;
 }
-button.small{padding:9px;font-size:13px}
+button.small{padding:10px;font-size:13px}
 .actions{display:flex;gap:8px}
 
-/* RESULT */
 pre{
   background:var(--box);
-  padding:14px;
-  border-radius:10px;
+  padding:15px;
+  border-radius:14px;
   max-height:260px;
   overflow-y:auto;
   white-space:pre-wrap;
@@ -112,13 +134,12 @@ pre{
   font-size:13px;
 }
 
-/* HISTORY */
 .history{
   display:none;
   margin-top:10px;
   background:var(--box);
   padding:10px;
-  border-radius:10px;
+  border-radius:14px;
   font-size:12px;
   max-height:160px;
   overflow-y:auto;
@@ -128,29 +149,23 @@ pre{
   padding:4px 0;
 }
 
-/* FOOTER GLOW */
 .footer{
   text-align:center;
   margin-top:18px;
   font-size:13px;
   letter-spacing:2px;
   font-weight:bold;
-  color:var(--glow);
-  animation:glow 2.5s ease-in-out infinite;
+  background:linear-gradient(135deg,#00c6ff,#ff4ecd);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:glow 3s ease-in-out infinite;
 }
 @keyframes glow{
-  0%{text-shadow:0 0 5px var(--glow);opacity:.6}
-  50%{
-    text-shadow:
-      0 0 10px var(--glow),
-      0 0 20px var(--glow),
-      0 0 30px var(--glow);
-    opacity:1
-  }
-  100%{text-shadow:0 0 5px var(--glow);opacity:.6}
+  0%{text-shadow:0 0 8px #00c6ff}
+  50%{text-shadow:0 0 20px #ff4ecd}
+  100%{text-shadow:0 0 8px #00c6ff}
 }
 
-/* BACK TO TOP (BIGGER) */
 #topBtn{
   position:fixed;
   bottom:24px;
@@ -158,12 +173,12 @@ pre{
   background:linear-gradient(135deg,var(--btn1),var(--btn2));
   border:none;
   border-radius:50%;
-  width:60px;
-  height:60px;
+  width:62px;
+  height:62px;
   cursor:pointer;
   font-size:26px;
   display:none;
-  box-shadow:0 0 20px rgba(0,198,255,.8);
+  box-shadow:0 0 25px rgba(255,78,205,.8);
 }
 </style>
 </head>
@@ -211,88 +226,45 @@ pre{
 <button id="topBtn" onclick="scrollTop()">⬆</button>
 
 <script>
-let autoClearTimer = null;
-let historyData = [];
+let autoClearTimer=null;
+let historyData=[];
 
-function toggleMode(){
-  document.body.classList.toggle("light");
+function toggleMode(){document.body.classList.toggle("light");}
+function tabSwitch(id,el){
+ document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+ document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+ el.classList.add('active');
+ document.getElementById(id).classList.add('active');
+ clearResult();
 }
-
-function tabSwitch(id, el){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById(id).classList.add('active');
-  clearResult();
-}
-
 function startAutoClear(){
-  if(autoClearTimer) clearTimeout(autoClearTimer);
-  autoClearTimer = setTimeout(clearResult, 60000); // 1 minute
+ if(autoClearTimer)clearTimeout(autoClearTimer);
+ autoClearTimer=setTimeout(clearResult,60000);
 }
-
-function showResult(data,label){
-  out.textContent = typeof data === 'object'
-    ? JSON.stringify(data,null,2)
-    : data;
-  if(label) addHistory(label);
-  startAutoClear();
+function showResult(d,label){
+ out.textContent=typeof d==='object'?JSON.stringify(d,null,2):d;
+ if(label)addHistory(label);
+ startAutoClear();
 }
-
-function clearResult(){
-  out.textContent = "";
-  m.value = "";
-  a.value = "";
+function clearResult(){out.textContent="";m.value="";a.value="";}
+function copyResult(){navigator.clipboard.writeText(out.textContent||"");}
+function toggleHistory(){history.style.display=history.style.display==="none"?"block":"none";}
+function addHistory(t){
+ historyData.unshift(t);
+ if(historyData.length>20)historyData.pop();
+ history.innerHTML=historyData.map(h=>"<div>"+h+"</div>").join("");
 }
-
-function copyResult(){
-  navigator.clipboard.writeText(out.textContent || "");
-  alert("Result copied");
-}
-
-/* HISTORY FUNCTIONS */
-function toggleHistory(){
-  history.style.display =
-    history.style.display === "none" ? "block" : "none";
-}
-
-function addHistory(text){
-  historyData.unshift(text);
-  if(historyData.length > 20) historyData.pop();
-  renderHistory();
-}
-
-function renderHistory(){
-  history.innerHTML = historyData.map(h=>"<div>"+h+"</div>").join("");
-}
-
-function clearHistory(){
-  historyData = [];
-  renderHistory();
-}
-
-/* API CALLS */
+function clearHistory(){historyData=[];history.innerHTML="";}
 function checkMobile(){
-  if(!m.value) return;
-  fetch('/api/mobile?number='+m.value)
-    .then(r=>r.json())
-    .then(d=>showResult(d,"📱 "+m.value));
+ if(!m.value)return;
+ fetch('/api/mobile?number='+m.value).then(r=>r.json()).then(d=>showResult(d,"📱 "+m.value));
 }
-
 function checkAadhaar(){
-  if(!a.value) return;
-  fetch('/api/aadhaar?aadhar='+a.value)
-    .then(r=>r.json())
-    .then(d=>showResult(d,"🆔 "+a.value));
+ if(!a.value)return;
+ fetch('/api/aadhaar?aadhar='+a.value).then(r=>r.json()).then(d=>showResult(d,"🆔 "+a.value));
 }
-
-/* BACK TO TOP */
-window.onscroll = function(){
-  topBtn.style.display = window.scrollY > 200 ? "block" : "none";
-}
-function scrollTop(){
-  window.scrollTo({top:0,behavior:'smooth'});
-}
+window.onscroll=()=>{topBtn.style.display=window.scrollY>200?"block":"none";}
+function scrollTop(){window.scrollTo({top:0,behavior:'smooth'});}
 </script>
 
 </body>
@@ -306,15 +278,15 @@ def home():
 @app.route("/api/mobile")
 def mobile_api():
     number = request.args.get("number")
-    if not number:
-        return jsonify({"error":"number missing"})
-    url = f"https://darkie.x10.mx/numapi.php?action=api&key=NEXTGEN&number={number}"
-    return jsonify(requests.get(url, timeout=15).json())
+    return jsonify(requests.get(
+        f"https://darkie.x10.mx/numapi.php?action=api&key=NEXTGEN&number={number}",
+        timeout=15
+    ).json())
 
 @app.route("/api/aadhaar")
 def aadhaar_api():
     a = request.args.get("aadhar")
-    if not a:
-        return jsonify({"error":"aadhar missing"})
-    url = f"https://darkie.x10.mx/numapi.php?action=api&key=aa89dd725a6e5773ed4384fce8103d8a&aadhar={a}"
-    return jsonify(requests.get(url, timeout=15).json())
+    return jsonify(requests.get(
+        f"https://darkie.x10.mx/numapi.php?action=api&key=aa89dd725a6e5773ed4384fce8103d8a&aadhar={a}",
+        timeout=15
+    ).json())
