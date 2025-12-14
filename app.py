@@ -16,323 +16,231 @@ HTML = """
   --bg1:#0f0c29;
   --bg2:#302b63;
   --bg3:#ff4ecd;
-  --card:rgba(255,255,255,0.16);
+  --card:rgba(255,255,255,0.18);
   --text:#ffffff;
   --btn1:#ff0844;
   --btn2:#ff512f;
   --box:rgba(0,0,0,.45);
   --glow:#ff2f6d;
 }
-body.light{
-  --bg1:#ffecec;
-  --bg2:#ffd6e0;
-  --bg3:#fff0f5;
-  --card:rgba(255,255,255,0.97);
-  --text:#000;
-  --btn1:#ff3b3b;
-  --btn2:#ff6a6a;
-  --box:#ffe9ef;
-  --glow:#ff3b3b;
-}
 
-*{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
-html{scroll-behavior:smooth}
+*{box-sizing:border-box;font-family:Segoe UI,sans-serif}
 
 body{
   margin:0;
   min-height:100vh;
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
   background:linear-gradient(-45deg,var(--bg1),var(--bg2),var(--bg3));
   background-size:400% 400%;
-  animation:bgMove 14s ease infinite;
+  animation:bg 12s ease infinite;
   color:var(--text);
-  position:relative;
-  overflow:hidden;
 }
 
-/* 🔁 MOVING WATERMARK */
-body::before{
-  content:"Devlaper TELEGRAM USERNAME @BAN8T  •  ";
-  position:fixed;
-  inset:-200%;
-  font-size:clamp(16px,3.5vw,42px);
-  font-weight:800;
-  letter-spacing:3px;
-  color:rgba(255,255,255,0.06);
-  white-space:nowrap;
-  transform:rotate(-25deg);
-  pointer-events:none;
-  z-index:0;
-  animation:waterMove 60s linear infinite;
-}
-@media (max-width:600px){
-  body::before{font-size:14px;animation-duration:80s;}
-}
-@keyframes waterMove{
-  0%{transform:translateX(0) rotate(-25deg)}
-  100%{transform:translateX(-50%) rotate(-25deg)}
-}
-@keyframes bgMove{
+@keyframes bg{
   0%{background-position:0% 50%}
   50%{background-position:100% 50%}
   100%{background-position:0% 50%}
 }
 
-/* CARD */
 .card{
-  width:98%;
-  max-width:640px;
-  min-height:88vh;
-  padding:40px 28px;
-  border-radius:24px;
+  width:95%;
+  max-width:620px;
+  min-height:85vh;
   background:var(--card);
-  backdrop-filter:blur(22px);
-  box-shadow:0 0 80px rgba(255,47,109,.35);
-  display:flex;
-  flex-direction:column;
-  position:relative;
-  z-index:1;
+  backdrop-filter:blur(18px);
+  border-radius:22px;
+  padding:36px 26px;
+  box-shadow:0 0 60px rgba(255,47,109,.4);
 }
 
-/* HEADER */
-.topbar{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
+h1{
+  text-align:center;
+  margin:0;
+}
+
+.dev{
+  text-align:center;
+  font-size:13px;
+  color:var(--glow);
   margin-bottom:22px;
 }
-.topbar h1{
-  margin:0;
-  font-size:26px;
-  letter-spacing:1px;
-}
-.dev-name{
-  margin-top:6px;
-  font-size:13px;
-  letter-spacing:2px;
-  animation:devGlow 2.5s ease-in-out infinite;
-}
-.dev-name a{
-  color:var(--glow);
-  text-decoration:none;
-}
-@keyframes devGlow{
-  0%{text-shadow:0 0 6px var(--glow);opacity:.6}
-  50%{text-shadow:0 0 18px var(--glow);opacity:1}
-  100%{text-shadow:0 0 6px var(--glow);opacity:.6}
+
+.tabs{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
 }
 
-/* TOGGLE */
-.toggle{
-  position:absolute;
-  top:22px;
-  right:22px;
-  cursor:pointer;
-  font-size:13px;
-  padding:8px 18px;
-  border-radius:30px;
-  background:linear-gradient(135deg,var(--btn1),var(--btn2));
-  color:#fff;
-}
-
-/* TABS */
-.tabs{display:flex;margin:20px 0}
 .tab{
   flex:1;
   padding:14px;
-  cursor:pointer;
-  border-radius:18px;
-  background:rgba(255,255,255,.18);
-  color:var(--text);
   text-align:center;
-}
-.tab.active{
-  background:linear-gradient(135deg,var(--btn1),var(--btn2));
-  color:#fff;
-  font-weight:bold;
+  border-radius:16px;
+  cursor:pointer;
+  background:rgba(255,255,255,.2);
 }
 
-/* INPUT + BUTTON */
+.tab.active{
+  background:linear-gradient(135deg,var(--btn1),var(--btn2));
+}
+
 .section{display:none}
 .section.active{display:block}
+
 input{
   width:100%;
   padding:15px;
-  border-radius:16px;
+  border-radius:14px;
   border:none;
-  margin-bottom:10px;
+  margin-bottom:6px;
   font-size:15px;
 }
+
+.error{
+  font-size:12px;
+  color:#ffd0d0;
+  margin-bottom:8px;
+  display:none;
+}
+
 button{
   width:100%;
   padding:15px;
   border:none;
-  border-radius:18px;
+  border-radius:16px;
   background:linear-gradient(135deg,var(--btn1),var(--btn2));
+  color:#fff;
   font-weight:bold;
   cursor:pointer;
-  margin-bottom:8px;
-  color:#fff;
-  box-shadow:0 6px 20px rgba(255,47,109,.45);
 }
-button.small{padding:12px;font-size:13px}
-.actions{display:flex;gap:10px}
 
-/* RESULT */
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.loading::after{
+  content:" ⏳";
+  animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+  0%{opacity:.4}
+  50%{opacity:1}
+  100%{opacity:.4}
+}
+
 pre{
+  margin-top:18px;
   background:var(--box);
   padding:16px;
   border-radius:16px;
   max-height:260px;
   overflow-y:auto;
-  white-space:pre-wrap;
-  word-break:break-word;
   font-size:13px;
-}
-
-/* HISTORY */
-.history{
-  display:none;
-  margin-top:14px;
-  background:var(--box);
-  padding:12px;
-  border-radius:16px;
-  font-size:12px;
-  max-height:160px;
-  overflow-y:auto;
-}
-.history div{
-  border-bottom:1px solid rgba(255,255,255,.2);
-  padding:4px 0;
-}
-
-/* FOOTER */
-.footer{
-  margin-top:auto;
-  text-align:center;
-  padding-top:22px;
-  font-size:13px;
-  letter-spacing:2px;
-  font-weight:bold;
-  background:linear-gradient(135deg,#ff0844,#ff512f);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
-
-/* BACK TO TOP */
-#topBtn{
-  position:fixed;
-  bottom:26px;
-  right:26px;
-  background:linear-gradient(135deg,var(--btn1),var(--btn2));
-  border:none;
-  border-radius:50%;
-  width:66px;
-  height:66px;
-  cursor:pointer;
-  font-size:26px;
-  display:none;
-  color:#fff;
-  box-shadow:0 0 30px rgba(255,47,109,.9);
 }
 </style>
 </head>
 
 <body>
 
-<div class="card" id="top">
-  <div class="topbar">
-    <h1>OGGY INFO SITE</h1>
-    <div class="dev-name">Developer : <a href="https://t.me/BAN8T" target="_blank">@BAN8T</a></div>
-    <div class="toggle" onclick="toggleMode()">🌙 / ☀️</div>
-  </div>
+<div class="card">
 
-  <div class="tabs">
-    <div class="tab active" onclick="tabSwitch('mobile',this)">📱 Mobile</div>
-    <div class="tab" onclick="tabSwitch('aadhaar',this)">🆔 Aadhaar</div>
-  </div>
+<h1>OGGY INFO SITE</h1>
+<div class="dev">Developer : @BAN8T</div>
 
-  <div id="mobile" class="section active">
-    <input id="m" placeholder="Enter Mobile Number">
-    <button onclick="checkMobile()">Check Mobile</button>
-  </div>
-
-  <div id="aadhaar" class="section">
-    <input id="a" placeholder="Enter Aadhaar Number">
-    <button onclick="checkAadhaar()">Check Aadhaar</button>
-  </div>
-
-  <div class="actions">
-    <button class="small" onclick="copyResult()">📋 Copy</button>
-    <button class="small" onclick="clearResult()">🧹 Clear</button>
-  </div>
-
-  <pre id="out">Result will appear here...</pre>
-
-  <div class="actions">
-    <button class="small" onclick="toggleHistory()">🕘 History</button>
-    <button class="small" onclick="clearHistory()">🗑️ Clear History</button>
-  </div>
-
-  <div class="history" id="history"></div>
-
-  <div class="footer">2025 : OGGY INFO SITE</div>
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('mobile',this)">📱 Mobile</div>
+  <div class="tab" onclick="switchTab('aadhaar',this)">🆔 Aadhaar</div>
 </div>
 
-<button id="topBtn" onclick="scrollTop()">⬆</button>
+<!-- MOBILE -->
+<div id="mobile" class="section active">
+  <input id="m" placeholder="Enter 10 digit Mobile Number"
+         inputmode="numeric" maxlength="10"
+         oninput="validateMobile()">
+  <div class="error" id="mErr">Enter exactly 10 digits</div>
+  <button id="mBtn" onclick="checkMobile()" disabled>Check Mobile</button>
+</div>
+
+<!-- AADHAAR -->
+<div id="aadhaar" class="section">
+  <input id="a" placeholder="Enter 12 digit Aadhaar Number"
+         inputmode="numeric" maxlength="12"
+         oninput="validateAadhaar()">
+  <div class="error" id="aErr">Enter exactly 12 digits</div>
+  <button id="aBtn" onclick="checkAadhaar()" disabled>Check Aadhaar</button>
+</div>
+
+<pre id="out">Result will appear here...</pre>
+
+</div>
 
 <script>
-let autoClearTimer=null;
-let historyData=[];
-
-/* remember theme */
-if(localStorage.getItem("theme")==="light"){
-  document.body.classList.add("light");
-}
-
-function toggleMode(){
-  document.body.classList.toggle("light");
-  localStorage.setItem("theme",
-    document.body.classList.contains("light")?"light":"dark");
-}
-
-function tabSwitch(id,el){
+function switchTab(id,el){
  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
  el.classList.add('active');
  document.getElementById(id).classList.add('active');
- clearResult();
+ out.textContent="";
 }
-function startAutoClear(){
- if(autoClearTimer)clearTimeout(autoClearTimer);
- autoClearTimer=setTimeout(clearResult,60000);
+
+function onlyDigits(el,max){
+ el.value = el.value.replace(/\\D/g,'').slice(0,max);
 }
-function showResult(d,label){
- out.textContent=typeof d==='object'?JSON.stringify(d,null,2):d;
- if(label)addHistory(label);
- startAutoClear();
+
+function validateMobile(){
+ onlyDigits(m,10);
+ if(m.value.length===10){
+   mErr.style.display="none";
+   mBtn.disabled=false;
+ }else{
+   mErr.style.display="block";
+   mBtn.disabled=true;
+ }
 }
-function clearResult(){out.textContent="";m.value="";a.value="";}
-function copyResult(){navigator.clipboard.writeText(out.textContent||"");}
-function toggleHistory(){history.style.display=history.style.display==="none"?"block":"none";}
-function addHistory(t){
- historyData.unshift(t);
- if(historyData.length>20)historyData.pop();
- history.innerHTML=historyData.map(h=>"<div>"+h+"</div>").join("");
+
+function validateAadhaar(){
+ onlyDigits(a,12);
+ if(a.value.length===12){
+   aErr.style.display="none";
+   aBtn.disabled=false;
+ }else{
+   aErr.style.display="block";
+   aBtn.disabled=true;
+ }
 }
-function clearHistory(){historyData=[];history.innerHTML="";}
+
+function setLoading(btn,state){
+ if(state){
+   btn.disabled=true;
+   btn.dataset.txt=btn.innerText;
+   btn.innerText="Checking";
+   btn.classList.add("loading");
+ }else{
+   btn.disabled=false;
+   btn.innerText=btn.dataset.txt;
+   btn.classList.remove("loading");
+ }
+}
+
 function checkMobile(){
- if(!m.value)return;
- fetch('/api/mobile?number='+m.value).then(r=>r.json()).then(d=>showResult(d,"📱 "+m.value));
+ setLoading(mBtn,true);
+ fetch('/api/mobile?number='+m.value)
+  .then(r=>r.json())
+  .then(d=>out.textContent=JSON.stringify(d,null,2))
+  .finally(()=>setLoading(mBtn,false));
 }
+
 function checkAadhaar(){
- if(!a.value)return;
- fetch('/api/aadhaar?aadhar='+a.value).then(r=>r.json()).then(d=>showResult(d,"🆔 "+a.value));
+ setLoading(aBtn,true);
+ fetch('/api/aadhaar?aadhar='+a.value)
+  .then(r=>r.json())
+  .then(d=>out.textContent=JSON.stringify(d,null,2))
+  .finally(()=>setLoading(aBtn,false));
 }
-window.onscroll=()=>{topBtn.style.display=window.scrollY>200?"block":"none";}
-function scrollTop(){window.scrollTo({top:0,behavior:'smooth'});}
 </script>
 
 </body>
@@ -345,14 +253,21 @@ def home():
 
 @app.route("/api/mobile")
 def mobile_api():
-    return jsonify(requests.get(
-        f"https://darkie.x10.mx/numapi.php?action=api&key=NEXTGEN&number={request.args.get('number')}",
-        timeout=15
-    ).json())
+    return jsonify(
+        requests.get(
+            f"https://darkie.x10.mx/numapi.php?action=api&key=NEXTGEN&number={request.args.get('number')}",
+            timeout=15
+        ).json()
+    )
 
 @app.route("/api/aadhaar")
 def aadhaar_api():
-    return jsonify(requests.get(
-        f"https://darkie.x10.mx/numapi.php?action=api&key=aa89dd725a6e5773ed4384fce8103d8a&aadhar={request.args.get('aadhar')}",
-        timeout=15
-    ).json())
+    return jsonify(
+        requests.get(
+            f"https://darkie.x10.mx/numapi.php?action=api&key=aa89dd725a6e5773ed4384fce8103d8a&aadhar={request.args.get('aadhar')}",
+            timeout=15
+        ).json()
+    )
+
+if __name__ == "__main__":
+    app.run(debug=True)
