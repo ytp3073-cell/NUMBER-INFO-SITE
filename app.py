@@ -20,7 +20,6 @@ HTML = """
   --card:rgba(255,255,255,0.16);
   --text:#ffffff;
 
-  /* 🔴 COOL RED BUTTONS */
   --btn1:#ff0844;
   --btn2:#ff512f;
 
@@ -54,9 +53,42 @@ body{
   justify-content:center;
   background:linear-gradient(-45deg,var(--bg1),var(--bg2),var(--bg3));
   background-size:400% 400%;
-  animation:bgMove 12s ease infinite;
+  animation:bgMove 14s ease infinite;
   color:var(--text);
+  position:relative;
+  overflow:hidden;
 }
+
+/* 🔁 REPEATED + MOVING WATERMARK */
+body::before{
+  content:"Devlaper TELEGRAM USERNAME @BAN8T  •  ";
+  position:fixed;
+  inset:-200%;
+  font-size:clamp(16px,3.5vw,42px);
+  font-weight:800;
+  letter-spacing:3px;
+  color:rgba(255,255,255,0.06);
+  white-space:nowrap;
+  transform:rotate(-25deg);
+  pointer-events:none;
+  z-index:0;
+  animation:waterMove 60s linear infinite;
+}
+
+/* Mobile watermark smaller */
+@media (max-width:600px){
+  body::before{
+    font-size:14px;
+    letter-spacing:2px;
+    animation-duration:80s;
+  }
+}
+
+@keyframes waterMove{
+  0%{transform:translateX(0) rotate(-25deg)}
+  100%{transform:translateX(-50%) rotate(-25deg)}
+}
+
 @keyframes bgMove{
   0%{background-position:0% 50%}
   50%{background-position:100% 50%}
@@ -75,6 +107,8 @@ body{
   box-shadow:0 0 80px rgba(255,47,109,.35);
   display:flex;
   flex-direction:column;
+  position:relative;
+  z-index:1;
 }
 
 /* HEADER */
@@ -136,9 +170,6 @@ button{
   margin-bottom:8px;
   color:#fff;
   box-shadow:0 6px 20px rgba(255,47,109,.45);
-}
-button:hover{
-  transform:scale(1.02);
 }
 button.small{
   padding:12px;
