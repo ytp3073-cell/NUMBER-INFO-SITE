@@ -49,9 +49,12 @@ body{
   100%{background-position:0% 50%}
 }
 
+/* 🔷 CARD WIDTH INCREASED */
 .card{
-  width:95%;max-width:500px;
-  padding:22px;border-radius:18px;
+  width:98%;
+  max-width:620px;          /* 👈 pehle 500px tha */
+  padding:24px;
+  border-radius:18px;
   background:var(--card);
   backdrop-filter:blur(18px);
   box-shadow:0 0 40px rgba(0,0,0,.5);
@@ -71,7 +74,7 @@ h1{margin:0;font-size:22px}
 
 .tabs{display:flex;margin:12px 0}
 .tab{
-  flex:1;padding:10px;cursor:pointer;
+  flex:1;padding:12px;cursor:pointer;   /* थोड़ा padding बढ़ाया */
   border:1px solid rgba(255,255,255,.3);
   background:transparent;color:var(--text);
   text-align:center;
@@ -82,42 +85,42 @@ h1{margin:0;font-size:22px}
 .section.active{display:block}
 
 input{
-  width:100%;padding:11px;
+  width:100%;padding:12px;
   border-radius:10px;border:none;
   margin-bottom:8px;
 }
 
 button{
-  width:100%;padding:11px;
+  width:100%;padding:12px;
   border:none;border-radius:10px;
   background:linear-gradient(135deg,var(--btn1),var(--btn2));
   font-weight:bold;cursor:pointer;
   margin-bottom:6px;
   color:#000;
 }
-button.small{padding:8px;font-size:13px}
-.actions{display:flex;gap:6px}
+button.small{padding:9px;font-size:13px}
+.actions{display:flex;gap:8px}
 
-/* RESULT – thodi scroll */
+/* 🔷 RESULT BOX HEIGHT INCREASED (THODI SCROLL) */
 pre{
   background:var(--box);
-  padding:12px;
+  padding:14px;
   border-radius:10px;
-  max-height:180px;
+  max-height:260px;          /* 👈 pehle 180px tha */
   overflow-y:auto;
   white-space:pre-wrap;
   word-break:break-word;
   font-size:13px;
 }
 
-/* HISTORY (SAFE – clear nahi hogi) */
+/* HISTORY (SAFE) */
 .history{
-  margin-top:8px;
+  margin-top:10px;
   background:var(--box);
-  padding:8px;
+  padding:10px;
   border-radius:10px;
   font-size:12px;
-  max-height:120px;
+  max-height:140px;
   overflow-y:auto;
 }
 .history div{
@@ -128,7 +131,7 @@ pre{
 /* FOOTER GLOW */
 .footer{
   text-align:center;
-  margin-top:16px;
+  margin-top:18px;
   font-size:13px;
   letter-spacing:2px;
   font-weight:bold;
@@ -138,10 +141,9 @@ pre{
 @keyframes glow{
   0%{text-shadow:0 0 5px var(--glow);opacity:.6}
   50%{
-    text-shadow:
-      0 0 10px var(--glow),
-      0 0 20px var(--glow),
-      0 0 30px var(--glow);
+    text-shadow:0 0 10px var(--glow),
+                0 0 20px var(--glow),
+                0 0 30px var(--glow);
     opacity:1
   }
   100%{text-shadow:0 0 5px var(--glow);opacity:.6}
@@ -219,7 +221,7 @@ function tabSwitch(id, el){
 
 function startAutoClear(){
   if(autoClearTimer) clearTimeout(autoClearTimer);
-  autoClearTimer = setTimeout(clearResult, 60000); // ⏱️ 1 minute
+  autoClearTimer = setTimeout(clearResult, 60000); // 1 minute
 }
 
 function showResult(data,label){
