@@ -780,7 +780,7 @@ def track():
         return jsonify({"success": False, "message": "Invalid mobile number"})
 
     try:
-        api_url = f"https://darkie.x10.mx/numapi.php?action=api&key=NEXTGEN&number=num"
+        api_url = f"https://neonosint.onrender.com/number-to-info?apikey=cSSohzIQeSPMmSogyHM9ENMpHifNhOg5&number={num}"
         response = requests.get(api_url, timeout=15)
         api = response.json()
 
