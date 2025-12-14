@@ -5,244 +5,240 @@ app = Flask(__name__)
 
 HTML = """
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>OGGY INFO SITE</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 :root{
-  --bg1:#0f0c29;
-  --bg2:#302b63;
-  --bg3:#ff4ecd;
-  --card:rgba(255,255,255,0.18);
-  --text:#ffffff;
-  --btn1:#ff0844;
-  --btn2:#ff512f;
-  --box:rgba(0,0,0,.45);
-  --glow:#ff2f6d;
+ --bg1:#0f0c29;--bg2:#302b63;--bg3:#ff4ecd;
+ --card:rgba(255,255,255,.18);
+ --text:#fff;
+ --btn1:#ff0844;--btn2:#ff512f;
+ --box:rgba(0,0,0,.45);
+ --glow:#ff2f6d;
 }
-
+body.light{
+ --bg1:#fff0f5;--bg2:#ffe6ec;--bg3:#ffd6e0;
+ --card:#fff;--text:#000;
+ --btn1:#ff3b3b;--btn2:#ff6a6a;
+ --box:#f4f4f4;
+}
 *{box-sizing:border-box;font-family:Segoe UI,sans-serif}
-
 body{
-  margin:0;
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:linear-gradient(-45deg,var(--bg1),var(--bg2),var(--bg3));
-  background-size:400% 400%;
-  animation:bg 12s ease infinite;
-  color:var(--text);
+ margin:0;min-height:100vh;
+ display:flex;justify-content:center;align-items:center;
+ background:linear-gradient(-45deg,var(--bg1),var(--bg2),var(--bg3));
+ background-size:400% 400%;
+ animation:bg 14s infinite;
+ color:var(--text);overflow:hidden;
+}
+@keyframes bg{
+ 0%{background-position:0% 50%}
+ 50%{background-position:100% 50%}
+ 100%{background-position:0% 50%}
 }
 
-@keyframes bg{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
+/* WATERMARK */
+body::before{
+ content:"Devlaper TELEGRAM USERNAME @BAN8T  •  ";
+ position:fixed;inset:-200%;
+ font-size:clamp(16px,4vw,44px);
+ font-weight:800;letter-spacing:3px;
+ color:rgba(255,255,255,.06);
+ white-space:nowrap;
+ transform:rotate(-25deg);
+ animation:wm 60s linear infinite;
+ pointer-events:none;
+}
+@keyframes wm{
+ from{transform:translateX(0) rotate(-25deg)}
+ to{transform:translateX(-50%) rotate(-25deg)}
 }
 
 .card{
-  width:95%;
-  max-width:620px;
-  min-height:85vh;
-  background:var(--card);
-  backdrop-filter:blur(18px);
-  border-radius:22px;
-  padding:36px 26px;
-  box-shadow:0 0 60px rgba(255,47,109,.4);
+ width:96%;max-width:650px;min-height:90vh;
+ padding:40px 28px;border-radius:24px;
+ background:var(--card);backdrop-filter:blur(20px);
+ box-shadow:0 0 80px rgba(255,47,109,.4);
+ display:flex;flex-direction:column;z-index:1;
 }
 
-h1{
-  text-align:center;
-  margin:0;
-}
-
+.top{text-align:center;margin-bottom:20px}
+.top h1{margin:0;font-size:26px}
 .dev{
-  text-align:center;
-  font-size:13px;
-  color:var(--glow);
-  margin-bottom:22px;
+ font-size:13px;letter-spacing:2px;
+ color:var(--glow);animation:glow 2.5s infinite;
+}
+.dev a{color:inherit;text-decoration:none}
+@keyframes glow{
+ 0%{opacity:.5}50%{opacity:1}100%{opacity:.5}
 }
 
-.tabs{
-  display:flex;
-  gap:10px;
-  margin-bottom:20px;
+.toggle{
+ position:absolute;top:20px;right:20px;
+ padding:8px 16px;border-radius:20px;
+ background:linear-gradient(135deg,var(--btn1),var(--btn2));
+ cursor:pointer;color:#fff;font-size:13px;
 }
 
+.tabs{display:flex;gap:10px;margin:18px 0}
 .tab{
-  flex:1;
-  padding:14px;
-  text-align:center;
-  border-radius:16px;
-  cursor:pointer;
-  background:rgba(255,255,255,.2);
+ flex:1;padding:14px;border-radius:16px;
+ background:rgba(255,255,255,.2);
+ text-align:center;cursor:pointer;
 }
-
-.tab.active{
-  background:linear-gradient(135deg,var(--btn1),var(--btn2));
-}
+.tab.active{background:linear-gradient(135deg,var(--btn1),var(--btn2))}
 
 .section{display:none}
 .section.active{display:block}
 
 input{
-  width:100%;
-  padding:15px;
-  border-radius:14px;
-  border:none;
-  margin-bottom:6px;
-  font-size:15px;
+ width:100%;padding:15px;border-radius:14px;
+ border:none;margin-bottom:6px;font-size:15px;
 }
-
-.error{
-  font-size:12px;
-  color:#ffd0d0;
-  margin-bottom:8px;
-  display:none;
-}
+.error{font-size:12px;color:#ffd0d0;display:none}
 
 button{
-  width:100%;
-  padding:15px;
-  border:none;
-  border-radius:16px;
-  background:linear-gradient(135deg,var(--btn1),var(--btn2));
-  color:#fff;
-  font-weight:bold;
-  cursor:pointer;
+ width:100%;padding:15px;border:none;
+ border-radius:16px;
+ background:linear-gradient(135deg,var(--btn1),var(--btn2));
+ color:#fff;font-weight:bold;cursor:pointer;
+ margin-bottom:8px;
 }
+button:disabled{opacity:.5;cursor:not-allowed}
+.loading::after{content:" ⏳";animation:pulse 1s infinite}
+@keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
 
-button:disabled{
-  opacity:.5;
-  cursor:not-allowed;
-}
-
-.loading::after{
-  content:" ⏳";
-  animation:pulse 1s infinite;
-}
-
-@keyframes pulse{
-  0%{opacity:.4}
-  50%{opacity:1}
-  100%{opacity:.4}
-}
+.actions{display:flex;gap:10px}
+button.small{padding:12px;font-size:13px}
 
 pre{
-  margin-top:18px;
-  background:var(--box);
-  padding:16px;
-  border-radius:16px;
-  max-height:260px;
-  overflow-y:auto;
-  font-size:13px;
+ background:var(--box);padding:16px;
+ border-radius:16px;font-size:13px;
+ max-height:300px;overflow-y:auto;
+}
+
+.history{
+ display:none;margin-top:12px;
+ background:var(--box);padding:12px;
+ border-radius:14px;font-size:12px;
+ max-height:160px;overflow-y:auto;
+}
+
+.footer{
+ margin-top:auto;text-align:center;
+ font-size:13px;letter-spacing:2px;
+ background:linear-gradient(135deg,#ff0844,#ff512f);
+ -webkit-background-clip:text;
+ -webkit-text-fill-color:transparent;
+}
+
+#topBtn{
+ position:fixed;bottom:26px;right:26px;
+ width:66px;height:66px;border-radius:50%;
+ border:none;font-size:26px;
+ background:linear-gradient(135deg,var(--btn1),var(--btn2));
+ color:#fff;cursor:pointer;display:none;
 }
 </style>
 </head>
 
 <body>
+<div class="card" id="top">
+ <div class="toggle" onclick="toggleMode()">🌙 / ☀️</div>
 
-<div class="card">
+ <div class="top">
+  <h1>OGGY INFO SITE</h1>
+  <div class="dev">Developer :
+   <a href="https://t.me/BAN8T" target="_blank">@BAN8T</a>
+  </div>
+ </div>
 
-<h1>OGGY INFO SITE</h1>
-<div class="dev">Developer : @BAN8T</div>
+ <div class="tabs">
+  <div class="tab active" onclick="tab('mobile',this)">📱 Mobile</div>
+  <div class="tab" onclick="tab('aadhaar',this)">🆔 Aadhaar</div>
+ </div>
 
-<div class="tabs">
-  <div class="tab active" onclick="switchTab('mobile',this)">📱 Mobile</div>
-  <div class="tab" onclick="switchTab('aadhaar',this)">🆔 Aadhaar</div>
+ <div id="mobile" class="section active">
+  <input id="m" placeholder="Enter 10 digit Mobile"
+   inputmode="numeric" maxlength="10"
+   oninput="vm()">
+  <div class="error" id="me">Enter exactly 10 digits</div>
+  <button id="mb" onclick="cm()" disabled>Check Mobile</button>
+ </div>
+
+ <div id="aadhaar" class="section">
+  <input id="a" placeholder="Enter 12 digit Aadhaar"
+   inputmode="numeric" maxlength="12"
+   oninput="va()">
+  <div class="error" id="ae">Enter exactly 12 digits</div>
+  <button id="ab" onclick="ca()" disabled>Check Aadhaar</button>
+ </div>
+
+ <div class="actions">
+  <button class="small" onclick="copy()">📋 Copy</button>
+  <button class="small" onclick="clearR()">🧹 Clear</button>
+ </div>
+
+ <pre id="out">Result will appear here...</pre>
+
+ <div class="actions">
+  <button class="small" onclick="th()">🕘 History</button>
+  <button class="small" onclick="ch()">🗑️ Clear History</button>
+ </div>
+ <div class="history" id="h"></div>
+
+ <div class="footer">2025 : OGGY INFO SITE</div>
 </div>
 
-<!-- MOBILE -->
-<div id="mobile" class="section active">
-  <input id="m" placeholder="Enter 10 digit Mobile Number"
-         inputmode="numeric" maxlength="10"
-         oninput="validateMobile()">
-  <div class="error" id="mErr">Enter exactly 10 digits</div>
-  <button id="mBtn" onclick="checkMobile()" disabled>Check Mobile</button>
-</div>
-
-<!-- AADHAAR -->
-<div id="aadhaar" class="section">
-  <input id="a" placeholder="Enter 12 digit Aadhaar Number"
-         inputmode="numeric" maxlength="12"
-         oninput="validateAadhaar()">
-  <div class="error" id="aErr">Enter exactly 12 digits</div>
-  <button id="aBtn" onclick="checkAadhaar()" disabled>Check Aadhaar</button>
-</div>
-
-<pre id="out">Result will appear here...</pre>
-
-</div>
+<button id="topBtn" onclick="scrollTo({top:0,behavior:'smooth'})">⬆</button>
 
 <script>
-function switchTab(id,el){
+let hist=[],timer=null;
+if(localStorage.theme==="light")document.body.classList.add("light");
+function toggleMode(){
+ document.body.classList.toggle("light");
+ localStorage.theme=document.body.classList.contains("light")?"light":"dark";
+}
+function tab(id,e){
  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
- el.classList.add('active');
- document.getElementById(id).classList.add('active');
- out.textContent="";
+ e.classList.add('active');document.getElementById(id).classList.add('active');
+ clearR();
 }
-
-function onlyDigits(el,max){
- el.value = el.value.replace(/\\D/g,'').slice(0,max);
+function d(el,max){el.value=el.value.replace(/\\D/g,'').slice(0,max)}
+function vm(){d(m,10);me.style.display=m.value.length==10?"none":"block";mb.disabled=m.value.length!=10}
+function va(){d(a,12);ae.style.display=a.value.length==12?"none":"block";ab.disabled=a.value.length!=12}
+function load(b,s){
+ if(s){b.disabled=true;b.dataset.t=b.innerText;b.innerText="Checking";b.classList.add("loading")}
+ else{b.disabled=false;b.innerText=b.dataset.t;b.classList.remove("loading")}
 }
-
-function validateMobile(){
- onlyDigits(m,10);
- if(m.value.length===10){
-   mErr.style.display="none";
-   mBtn.disabled=false;
- }else{
-   mErr.style.display="block";
-   mBtn.disabled=true;
- }
+function show(d,l){
+ out.textContent=JSON.stringify(d,null,2);
+ hist.unshift(l);if(hist.length>20)hist.pop();
+ h.innerHTML=hist.map(x=>"<div>"+x+"</div>").join("");
+ if(timer)clearTimeout(timer);
+ timer=setTimeout(clearR,60000);
 }
-
-function validateAadhaar(){
- onlyDigits(a,12);
- if(a.value.length===12){
-   aErr.style.display="none";
-   aBtn.disabled=false;
- }else{
-   aErr.style.display="block";
-   aBtn.disabled=true;
- }
+function cm(){
+ load(mb,true);
+ fetch('/api/mobile?number='+m.value).then(r=>r.json()).then(d=>show(d,"📱 "+m.value))
+ .finally(()=>load(mb,false));
 }
-
-function setLoading(btn,state){
- if(state){
-   btn.disabled=true;
-   btn.dataset.txt=btn.innerText;
-   btn.innerText="Checking";
-   btn.classList.add("loading");
- }else{
-   btn.disabled=false;
-   btn.innerText=btn.dataset.txt;
-   btn.classList.remove("loading");
- }
+function ca(){
+ load(ab,true);
+ fetch('/api/aadhaar?aadhar='+a.value).then(r=>r.json()).then(d=>show(d,"🆔 "+a.value))
+ .finally(()=>load(ab,false));
 }
-
-function checkMobile(){
- setLoading(mBtn,true);
- fetch('/api/mobile?number='+m.value)
-  .then(r=>r.json())
-  .then(d=>out.textContent=JSON.stringify(d,null,2))
-  .finally(()=>setLoading(mBtn,false));
-}
-
-function checkAadhaar(){
- setLoading(aBtn,true);
- fetch('/api/aadhaar?aadhar='+a.value)
-  .then(r=>r.json())
-  .then(d=>out.textContent=JSON.stringify(d,null,2))
-  .finally(()=>setLoading(aBtn,false));
-}
+function copy(){navigator.clipboard.writeText(out.textContent||"")}
+function clearR(){out.textContent="";m.value="";a.value="";mb.disabled=true;ab.disabled=true}
+function th(){h.style.display=h.style.display=="none"?"block":"none"}
+function ch(){hist=[];h.innerHTML=""}
+window.onscroll=()=>topBtn.style.display=scrollY>200?"block":"none";
 </script>
-
 </body>
 </html>
 """
@@ -253,21 +249,15 @@ def home():
 
 @app.route("/api/mobile")
 def mobile_api():
-    return jsonify(
-        requests.get(
-            f"https://darkie.x10.mx/numapi.php?action=api&key=NEXTGEN&number={request.args.get('number')}",
-            timeout=15
-        ).json()
-    )
+    return jsonify(requests.get(
+        f"https://darkie.x10.mx/numapi.php?action=api&key=NEXTGEN&number={request.args.get('number')}",
+        timeout=15).json())
 
 @app.route("/api/aadhaar")
 def aadhaar_api():
-    return jsonify(
-        requests.get(
-            f"https://darkie.x10.mx/numapi.php?action=api&key=aa89dd725a6e5773ed4384fce8103d8a&aadhar={request.args.get('aadhar')}",
-            timeout=15
-        ).json()
-    )
+    return jsonify(requests.get(
+        f"https://darkie.x10.mx/numapi.php?action=api&key=aa89dd725a6e5773ed4384fce8103d8a&aadhar={request.args.get('aadhar')}",
+        timeout=15).json())
 
-if __name__ == "__main__":
-    app.run(debug=True)
+if __name__=="__main__":
+    app.run()
