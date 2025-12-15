@@ -5,21 +5,11 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = "OGGY_SECRET_KEY_CHANGE_ME"
 
-# ---------------- ADMIN CONFIG ----------------
 ADMIN_ID = "admin"
 ADMIN_PASS = "admin123"
 
-# ---------------- TEMP STORAGE (Vercel) ----------------
 USERS = {}
-# USERS = {
-#   "username": {
-#       "history": [
-#           {time, type, value, result}
-#       ]
-#   }
-# }
 
-# ---------------- HTML ----------------
 HTML = """
 <!DOCTYPE html>
 <html>
@@ -29,12 +19,12 @@ HTML = """
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 body{margin:0;font-family:Segoe UI;background:#0f0c29;color:#fff}
-.card{max-width:750px;margin:auto;padding:20px}
+.card{max-width:800px;margin:auto;padding:20px}
 input,button{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:none}
 button{background:linear-gradient(135deg,#ff0844,#ff512f);color:#fff;font-weight:bold;cursor:pointer}
 .small{width:auto;padding:10px 14px}
 .row{display:flex;gap:10px;flex-wrap:wrap}
-pre{background:#111;padding:12px;border-radius:10px;max-height:300px;overflow:auto;white-space:pre-wrap}
+pre{background:#111;padding:12px;border-radius:10px;max-height:320px;overflow:auto;white-space:pre-wrap}
 a{color:#0ff;text-decoration:none}
 </style>
 </head>
@@ -80,32 +70,56 @@ a{color:#0ff;text-decoration:none}
 </div>
 
 <script>
+function showOutput(text){
+ document.getElementById("out").textContent = text;
+}
+
+function safeFetch(url){
+ showOutput("⏳ Loading...");
+ fetch(url)
+  .then(r => r.text())
+  .then(t => {
+    try{
+      const j = JSON.parse(t);
+      showOutput(JSON.stringify(j,null,2));
+    }catch(e){
+      showOutput(t || "⚠️ Empty response");
+    }
+  })
+  .catch(err=>{
+    showOutput("❌ Fetch Error\\n" + err);
+  });
+}
+
 function mobile(){
- fetch('/api/mobile?number='+num.value)
- .then(r=>r.json())
- .then(d=>out.textContent=JSON.stringify(d,null,2))
+ safeFetch('/api/mobile?number='+num.value);
 }
+
 function aadhaar(){
- fetch('/api/aadhaar?aadhar='+aad.value)
- .then(r=>r.json())
- .then(d=>out.textContent=JSON.stringify(d,null,2))
+ safeFetch('/api/aadhaar?aadhar='+aad.value);
 }
+
 function loadHistory(){
- fetch('/history')
- .then(r=>r.json())
- .then(d=>hist.textContent=JSON.stringify(d,null,2))
+ safeFetch('/history');
 }
+
 function clearHistory(){
- fetch('/clear-history').then(()=>hist.textContent="")
+ fetch('/clear-history').then(()=>hist.textContent="History cleared");
 }
-function copy(){navigator.clipboard.writeText(out.textContent||"")}
-function clean(){out.textContent="";hist.textContent=""}
+
+function copy(){
+ navigator.clipboard.writeText(out.textContent||"");
+}
+
+function clean(){
+ out.textContent="";
+ hist.textContent="";
+}
 </script>
 </body>
 </html>
 """
 
-# ---------------- ADMIN HTML ----------------
 ADMIN_HTML = """
 <!DOCTYPE html>
 <html>
@@ -141,26 +155,21 @@ a{color:#0ff}
 
 <pre>{{ data }}</pre>
 {% endif %}
-
 </body>
 </html>
 """
 
-# ---------------- ROUTES ----------------
 @app.route("/")
 def home():
     return render_template_string(HTML)
 
 @app.route("/set-user", methods=["POST"])
 def set_user():
-    u = request.form.get("username", "").strip()
-    if not u:
-        return redirect("/")
+    u = request.form.get("username","").strip()
     session["user"] = u
     USERS.setdefault(u, {"history": []})
     return redirect("/")
 
-# ---------------- MOBILE API (FIXED) ----------------
 @app.route("/api/mobile")
 def mobile_api():
     user = session.get("user")
@@ -174,10 +183,7 @@ def mobile_api():
     try:
         data = r.json()
     except:
-        data = {
-            "success": False,
-            "raw_output": r.text
-        }
+        data = {"raw_output": r.text}
 
     USERS[user]["history"].append({
         "time": str(datetime.now()),
@@ -185,10 +191,8 @@ def mobile_api():
         "value": number,
         "result": data
     })
-
     return jsonify(data)
 
-# ---------------- AADHAAR API (FIXED) ----------------
 @app.route("/api/aadhaar")
 def aadhaar_api():
     user = session.get("user")
@@ -202,10 +206,7 @@ def aadhaar_api():
     try:
         data = r.json()
     except:
-        data = {
-            "success": False,
-            "raw_output": r.text
-        }
+        data = {"raw_output": r.text}
 
     USERS[user]["history"].append({
         "time": str(datetime.now()),
@@ -213,12 +214,11 @@ def aadhaar_api():
         "value": a,
         "result": data
     })
-
     return jsonify(data)
 
 @app.route("/history")
 def history():
-    return jsonify(USERS.get(session.get("user"), {}).get("history", []))
+    return jsonify(USERS.get(session.get("user"),{}).get("history",[]))
 
 @app.route("/clear-history")
 def clear_history():
@@ -227,24 +227,22 @@ def clear_history():
         USERS[u]["history"] = []
     return "ok"
 
-# ---------------- ADMIN ----------------
-@app.route("/admin", methods=["GET", "POST"])
+@app.route("/admin", methods=["GET","POST"])
 def admin():
-    if request.method == "POST":
-        if request.form.get("aid") == ADMIN_ID and request.form.get("apass") == ADMIN_PASS:
-            session["admin"] = True
+    if request.method=="POST":
+        if request.form.get("aid")==ADMIN_ID and request.form.get("apass")==ADMIN_PASS:
+            session["admin"]=True
 
     if not session.get("admin"):
         return render_template_string(ADMIN_HTML)
 
     q = request.args.get("q")
-    data = USERS if not q else {q: USERS.get(q)}
+    data = USERS if not q else {q:USERS.get(q)}
     return render_template_string(ADMIN_HTML, data=data)
 
 @app.route("/admin/logout")
 def admin_logout():
-    session.pop("admin", None)
+    session.pop("admin",None)
     return redirect("/admin")
 
-# --------- VERCEL ENTRY ---------
 app = app
