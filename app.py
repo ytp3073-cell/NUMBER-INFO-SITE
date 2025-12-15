@@ -9,7 +9,7 @@ app.secret_key = "OGGY_SECRET_KEY_CHANGE_ME"
 ADMIN_ID = "admin"
 ADMIN_PASS = "admin123"
 
-# ---------------- MEMORY STORE (Vercel temp) ----------------
+# ---------------- TEMP STORAGE (Vercel) ----------------
 USERS = {}
 # USERS = {
 #   "username": {
@@ -29,12 +29,12 @@ HTML = """
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 body{margin:0;font-family:Segoe UI;background:#0f0c29;color:#fff}
-.card{max-width:700px;margin:auto;padding:20px}
+.card{max-width:750px;margin:auto;padding:20px}
 input,button{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:none}
-button{background:linear-gradient(135deg,#ff0844,#ff512f);color:#fff;font-weight:bold}
+button{background:linear-gradient(135deg,#ff0844,#ff512f);color:#fff;font-weight:bold;cursor:pointer}
 .small{width:auto;padding:10px 14px}
 .row{display:flex;gap:10px;flex-wrap:wrap}
-pre{background:#111;padding:12px;border-radius:10px;max-height:260px;overflow:auto}
+pre{background:#111;padding:12px;border-radius:10px;max-height:300px;overflow:auto;white-space:pre-wrap}
 a{color:#0ff;text-decoration:none}
 </style>
 </head>
@@ -115,7 +115,7 @@ ADMIN_HTML = """
 body{font-family:Segoe UI;background:#111;color:#fff;padding:20px}
 input,button{padding:10px;margin:5px;border-radius:8px;border:none}
 button{background:#ff0844;color:#fff}
-pre{background:#000;padding:12px;border-radius:10px;max-height:400px;overflow:auto}
+pre{background:#000;padding:12px;border-radius:10px;max-height:450px;overflow:auto;white-space:pre-wrap}
 a{color:#0ff}
 </style>
 </head>
@@ -160,39 +160,61 @@ def set_user():
     USERS.setdefault(u, {"history": []})
     return redirect("/")
 
+# ---------------- MOBILE API (FIXED) ----------------
 @app.route("/api/mobile")
 def mobile_api():
     user = session.get("user")
     number = request.args.get("number")
+
     r = requests.get(
         f"https://abbas-number-info.vercel.app/track?num={number}",
         timeout=15
-    ).json()
+    )
+
+    try:
+        data = r.json()
+    except:
+        data = {
+            "success": False,
+            "raw_output": r.text
+        }
 
     USERS[user]["history"].append({
         "time": str(datetime.now()),
         "type": "mobile",
         "value": number,
-        "result": r
+        "result": data
     })
-    return jsonify(r)
 
+    return jsonify(data)
+
+# ---------------- AADHAAR API (FIXED) ----------------
 @app.route("/api/aadhaar")
 def aadhaar_api():
     user = session.get("user")
     a = request.args.get("aadhar")
+
     r = requests.get(
         f"https://darkie.x10.mx/numapi.php?action=api&key=aa89dd725a6e5773ed4384fce8103d8a&aadhar={a}",
         timeout=15
-    ).json()
+    )
+
+    try:
+        data = r.json()
+    except:
+        data = {
+            "success": False,
+            "raw_output": r.text
+        }
 
     USERS[user]["history"].append({
         "time": str(datetime.now()),
         "type": "aadhaar",
         "value": a,
-        "result": r
+        "result": data
     })
-    return jsonify(r)
+
+    return jsonify(data)
 
 @app.route("/history")
 def history():
@@ -211,6 +233,7 @@ def admin():
     if request.method == "POST":
         if request.form.get("aid") == ADMIN_ID and request.form.get("apass") == ADMIN_PASS:
             session["admin"] = True
+
     if not session.get("admin"):
         return render_template_string(ADMIN_HTML)
 
@@ -223,5 +246,5 @@ def admin_logout():
     session.pop("admin", None)
     return redirect("/admin")
 
-# --------- VERCEL HANDLER ---------
+# --------- VERCEL ENTRY ---------
 app = app
